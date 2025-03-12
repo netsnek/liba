@@ -26,12 +26,12 @@ const config: GatsbyConfig = {
         },
         zitadel: {
           organizationId: '278641258304378483',
-          clientId: '278642690558596723@barbara-mauz',
+          clientId: '268283382465631862@cms',
           authority: 'https://accounts.netsnek.com',
           redirectUri:
             process.env.NODE_ENV === 'production'
               ? 'https://barbara-mauz.at'
-              : 'https://psychic-dollop-6vwv6x9vq9jf464g-8000.app.github.dev',
+              : 'https://redesigned-carnival-4gq4rvwqwvhq4pp.github.dev',
           projectIds: ['263491274097563233']
         },
         // sentry: {
