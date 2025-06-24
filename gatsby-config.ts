@@ -25,14 +25,14 @@ const config: GatsbyConfig = {
           repository: 'netsnek/liba'
         },
         zitadel: {
-          organizationId: '278641258304378483',
-          clientId: '278642690558596723@barbara-mauz',
+          organizationId: '268210807970535009',
+          clientId: '268283499285386870@cms',
           authority: 'https://accounts.netsnek.com',
           redirectUri:
             process.env.NODE_ENV === 'production'
               ? 'https://barbara-mauz.at'
               : 'https://psychic-dollop-6vwv6x9vq9jf464g-8000.app.github.dev',
-          projectIds: ['263491274097563233']
+          projectIds: ['268283499285321334']
         },
         // sentry: {
         //   org: 'photonq',
