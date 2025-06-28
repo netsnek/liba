@@ -20,7 +20,7 @@ const config: GatsbyConfig = {
     {
       resolve: `gatsby-plugin-jaen`,
       options: {
-        pylonUrl: 'https://api.jaen.io/graphql',
+        pylonUrl: 'https://jaen.netsnek.com/graphql',
         remote: {
           repository: 'netsnek/liba'
         },
