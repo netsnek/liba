@@ -162,7 +162,11 @@ const AltTopNav: FC<IAltTopNavProps> = ({ path, hamburgerIconProps }) => {
               color: 'brand.500'
             }}
           >
-            <LinkOverlay href="/docs">Kurse & Webinare</LinkOverlay>
+            <LinkOverlay
+              href={path === '/docs/workshops/' ? undefined : '/docs/workshops/'}
+            >
+              Kurse & Webinare
+            </LinkOverlay>
           </LinkBox>
           <LinkBox
             gridArea="portfolio"
@@ -339,14 +343,8 @@ const AltTopNav: FC<IAltTopNavProps> = ({ path, hamburgerIconProps }) => {
                 ml={1}
                 filter="drop-shadow(1px 2px 2px rgb(0 0 0 / 0.1))"
                 onClick={() => {
-                  // if not on the homepage, redirect to the homepage first
-                  if (path !== '/') {
-                    window.location.href = '/';
-                  }
-
-                  const element = document.getElementById('meine_beratung');
-                  if (element) {
-                    element.scrollIntoView({ behavior: 'smooth' });
+                  if (path !== '/docs/workshops/') {
+                    window.location.href = '/docs/workshops/';
                   }
                 }}
                 fontSize="sm"
