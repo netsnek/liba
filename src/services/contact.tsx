@@ -38,20 +38,34 @@ export const ContactModalProvider: React.FC<ContactModalDrawerProps> = ({ childr
   const [meta, setMeta] = React.useState<Record<string, any> | null>(null)
   const [isOpen, setIsOpen] = React.useState(false)
 
-  // When the query parameter is present, open the modal.
-  React.useEffect(() => {
-    if (isCalled) {
-      setIsOpen(true)
-    }
-  }, [isCalled])
-
   const toast = useToast()
   const authentication = useAuth()
+
+  // Helper: always get a full URL (incl. protocol, domain, path, search, hash) and guard SSR
+  const getCurrentUrl = React.useCallback(() => {
+    if (typeof window !== "undefined" && window.location) {
+      // Prefer the full href; this includes search and hash even on root "/"
+      return window.location.href
+    }
+    // SSR-safe fallback using @reach/router location
+    const pathname = location?.pathname ?? "/"
+    const search = location?.search ?? ""
+    const hash = location?.hash ?? ""
+    return `${pathname}${search}${hash}`
+  }, [location])
+
+  // When the query parameter is present, open the modal AND set meta.url
+  React.useEffect(() => {
+    if (isCalled) {
+      setMeta(prev => ({ ...prev, url: getCurrentUrl() }))
+      setIsOpen(true)
+    }
+  }, [isCalled, getCurrentUrl])
 
   const onOpen: ContactModalContextProps["onOpen"] = (args) => {
     const updatedMeta = {
       ...meta,
-      url: window.location.href,
+      url: getCurrentUrl(), // ensure we always store a URL when opening
       ...args?.meta,
     }
     setMeta(updatedMeta)
@@ -60,16 +74,20 @@ export const ContactModalProvider: React.FC<ContactModalDrawerProps> = ({ childr
 
   const onClose = () => {
     // Remove the "contact" query parameter from the URL without reloading the page.
-    const url = new URL(window.location.href)
-    url.searchParams.delete("contact")
-    window.history.replaceState({}, '', url.toString())
-
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href)
+      url.searchParams.delete("contact")
+      window.history.replaceState({}, "", url.toString())
+    }
     setIsOpen(false)
   }
 
   const onSubmit = async (data: ContactFormValues): Promise<void> => {
+    // Never empty: prefer meta.url, else current url, else "unknown"
+    const invokedOnUrl = meta?.url ?? getCurrentUrl() ?? "unknown"
+
     const { errors } = await sendTemplateMail(
-      '68d4c136-7d75-40cc-ba74-079a0dca4044', // replace with your actual template ID
+      "9c919b15-02f9-46ef-8fe8-db0b04abfc40", // replace with your actual template ID
       {
         envelope: {
           replyTo: data.email,
@@ -78,9 +96,9 @@ export const ContactModalProvider: React.FC<ContactModalDrawerProps> = ({ childr
           firstName: data.firstName,
           lastName: data.lastName,
           email: data.email,
-          phone: data.phone || '',
+          phone: data.phone || "",
           message: data.message,
-          invokedOnUrl: meta?.url,
+          invokedOnUrl, // <-- full href incl. search + hash; never empty
         },
       }
     )
